@@ -115,16 +115,11 @@ export default function Home() {
     setIsModalOpen(false);
     setAudioChunks([]);
     
-    // Send POST request to store the data
-    axios.post("http://localhost:8080/audios", {
-      url,
-      name: recordingName,
-      date: recordingDate
-    }).then(response => {
-      console.log("Recording saved:", response.data);
-    }).catch(error => {
-      console.error("Error saving recording:", error);
-    });
+    // Store the data in local storage
+    const storedRecordings = JSON.parse(localStorage.getItem('recordings')) || [];
+    const newRecording = { url, name: recordingName, date: recordingDate };
+    storedRecordings.push(newRecording);
+    localStorage.setItem('recordings', JSON.stringify(storedRecordings));
   };
 
   const toggleAudio = (url) => {
@@ -172,17 +167,10 @@ export default function Home() {
     updatedAudioURLs.splice(index, 1);
     setAudioURLs(updatedAudioURLs);
     
-    // Send DELETE request to delete the data
-    const audioIdToDelete = audioURLs[index]._id;
-     // Assuming each recording has an 'id' property
-
-    axios.delete(`http://localhost:8080/audios/${audioIdToDelete}`)
-      .then(response => {
-        console.log("Recording deleted:", response.data);
-      })
-      .catch(error => {
-        console.error("Error deleting recording:", error);
-      });
+    // Remove the recording from local storage
+    const storedRecordings = JSON.parse(localStorage.getItem('recordings')) || [];
+    storedRecordings.splice(index, 1);
+    localStorage.setItem('recordings', JSON.stringify(storedRecordings));
   };
 
   const openRenameModal = (index) => {
@@ -197,26 +185,16 @@ export default function Home() {
     setAudioURLs(updatedAudioURLs);
     setRenameModalOpen(false);
     
-    // Send PUT request to update the name
-    const audioIdToUpdate = audioURLs[editingIndex]._id;
-    axios.put(`http://localhost:8080/audios/${audioIdToUpdate}`, {
-      name: recordingName
-    }).then(response => {
-      console.log("Recording renamed:", response.data);
-    }).catch(error => {
-      console.error("Error renaming recording:", error);
-    });
+    // Update the recording name in local storage
+    const storedRecordings = JSON.parse(localStorage.getItem('recordings')) || [];
+    storedRecordings[editingIndex].name = recordingName;
+    localStorage.setItem('recordings', JSON.stringify(storedRecordings));
   };
 
-  // Fetch data on component mount
+  // Fetch data from local storage on component mount
   useEffect(() => {
-    axios.get("http://localhost:8080/audios")
-      .then(response => {
-        setAudioURLs(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching recordings:", error);
-      });
+    const storedRecordings = JSON.parse(localStorage.getItem('recordings')) || [];
+    setAudioURLs(storedRecordings);
   }, []);
 
   return (
@@ -304,7 +282,6 @@ export default function Home() {
               <Th maxWidth="200px">S/No</Th>
               <Th maxWidth="200px">Recording Name</Th>
               <Th maxWidth="200px">Date</Th>
-              {/* <Th maxWidth="200px">Duration</Th> */}
               <Th maxWidth="200px">Text</Th>
               <Th maxWidth="200px">Action</Th>
               <Th maxWidth="200px">Rename</Th>
@@ -317,7 +294,6 @@ export default function Home() {
                 <Td maxWidth="200px">{index + 1}</Td>
                 <Td maxWidth="200px">{recording.name}</Td>
                 <Td maxWidth="200px">{recording.date}</Td>
-                {/* <Td maxWidth="200px">{`00:${recording.duration < 10 ? "0" + recording.duration : recording.duration}`}</Td> */}
                 <Td maxWidth="200px">
                   <div style={{ maxHeight: '100px', overflowY: 'auto' }}>
                     <p>{recognizedTexts[recording.url]}</p>
