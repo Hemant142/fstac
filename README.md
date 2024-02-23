@@ -17,7 +17,7 @@ https://drive.google.com/file/d/1AGX8GngRgQd1iUu7kiLZ-39_OnMCZZas/view?usp=shari
 1. *Homepage*
    - A captivating landing page that welcomes users and introduces the app's offerings.
 
-[![HomePage.png](https://i.postimg.cc/fRFWr2Wn/HomePage.png)](https://postimg.cc/Yv6w4xmb)
+[![HomePage.png](https://i.postimg.cc/g0Ys1Dgs/HomePage.png)](https://postimg.cc/DSM1Xqk4)
 
 1. *REcordings*
    - Recording are shown into table formate
@@ -25,8 +25,6 @@ https://drive.google.com/file/d/1AGX8GngRgQd1iUu7kiLZ-39_OnMCZZas/view?usp=shari
 
 ## API
 The application interacts with the following API endpoints:
-
-Products Endpoint: https://electronix-express-api.onrender.com/products
 
 - GET: Retrieve a list of all recordings.
 - POST: Add a new recording to the localStorage.
